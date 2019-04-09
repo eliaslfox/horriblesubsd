@@ -1,0 +1,33 @@
+name:                horriblesubsd
+version:             0.1.0.0
+homepage:            https://github.com/eliaslfox/horriblesubsd#readme
+license:             BSD3
+author:              Elias Lawson-Fox
+maintainer:          me@eliaslfox.com
+copyright:           GPL
+category:            web
+extra-source-files:
+- README.md
+
+dependencies:
+  - base >= 4.7 && < 5
+  - wreq
+  - lens
+  - feed
+  - text
+  - regex-compat
+  - aeson
+  - directory
+  - bytestring
+  - command
+
+default-extensions:
+ - OverloadedStrings
+ - DeriveAnyClass
+ - DeriveGeneric
+ - DerivingStrategies
+
+executables:
+  horriblesubsd:
+    source-dirs:      src
+    main:             Main.hs
