@@ -22,17 +22,21 @@ main :: IO ()
 main = do
   config <- Config.readConfig
   items <- fmap parseItem' <$> getItems "https://horriblesubs.info/rss.php?res=1080"
-  let selected = filter (\e -> Episode.showName e `elem` Config.shows config) items
+  let selected = selectEpisodes (Config.shows config) items
   forM_ selected $ \e -> do
-    putStrLn $ "Downloading episode " <> show (Episode.num e) <> " of " <> T.unpack (Episode.showName e)
-    let dir = T.unpack $ Config.download_dir config <> "/" <> Episode.showName e
+    putStrLn $ "Downloading episode " <> show (Episode.num . snd $ e) <> " of " <> T.unpack (Episode.showName . snd $ e)
+    let dir = T.unpack $ Config.download_dir config <> "/" <> fst e
     Command.command_ [] "mkdir" ["-p", dir]
-    Command.command_ [Command.EchoStdout False]  (T.unpack $ Config.transmission_remote config) 
+    Command.command_ [Command.EchoStdout False]  (T.unpack $ Config.transmission_remote config)
       [ "--add"
-      , T.unpack (Episode.url e)
-      , "--download-dir", 
+      , T.unpack (Episode.url . snd $ e)
+      , "--download-dir",
       dir
       ]
+
+type Folder = T.Text
+selectEpisodes :: [Config.TvShow] -> [Episode] -> [(Folder, Episode)]
+selectEpisodes tvShows episodes = [(Config.folder t, e)| t <- tvShows, e <- episodes, Config.title t == Episode.showName e]
 
 getItems :: String -> IO [RSS.RSSItem]
 getItems url = do
@@ -55,7 +59,7 @@ parseItem :: RSS.RSSItem -> Maybe Episode
 parseItem item = do
   title <- RSS.rssItemTitle item
 
-  (showName, num) <- 
+  (showName, num) <-
     case Regex.matchRegex titleRegex (T.unpack title) of
       Just [showName, num] -> pure (showName, num)
       _ -> Nothing
@@ -67,7 +71,7 @@ parseItem item = do
 parseItem' :: RSS.RSSItem -> Episode
 parseItem' item =
   case parseItem item of
-    Just episode -> 
+    Just episode ->
       episode
 
     Nothing ->
