@@ -53,7 +53,7 @@ getItems url = do
       error "Failed to parse feed"
 
 titleRegex :: Regex
-titleRegex = Regex.mkRegex "\\[HorribleSubs\\] (['@,!\\(\\).A-z0-9 -]+) - ([0-9.]+) \\[[0-9]+p\\]\\.mkv"
+titleRegex = Regex.mkRegex "\\[HorribleSubs\\] (['@,!\\(\\).&A-z0-9 -]+) - ([0-9.]+) \\[[0-9]+p\\]\\.mkv"
 
 parseItem :: RSS.RSSItem -> Maybe Episode
 parseItem item = do
