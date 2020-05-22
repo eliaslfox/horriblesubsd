@@ -31,6 +31,7 @@ data Config
   = Config
     { download_dir :: Text
     , transmission_remote :: Text
+    , mkdir :: Text
     , shows :: [TvShow]
     }
     deriving stock Generic
