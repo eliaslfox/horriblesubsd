@@ -26,7 +26,7 @@ main = do
   forM_ selected $ \e -> do
     putStrLn $ "Downloading episode " <> show (Episode.num . snd $ e) <> " of " <> T.unpack (Episode.showName . snd $ e)
     let dir = T.unpack $ Config.download_dir config <> "/" <> fst e
-    Command.command_ [] "mkdir" ["-p", dir]
+    Command.command_ [] "/usr/bin/env" ["mkdir", "-p", dir]
     Command.command_ [Command.EchoStdout False]  (T.unpack $ Config.transmission_remote config)
       [ "--add"
       , T.unpack (Episode.url . snd $ e)
